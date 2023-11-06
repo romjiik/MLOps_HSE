@@ -29,12 +29,12 @@ curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Tree models
 curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Linear models", "model_name":"logreg"}' http://0.0.0.0:8080/delete_model
 curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Tree models", "model_name":"catboost"}' http://0.0.0.0:8080/delete_model
 ```
-* Чтобы обучить модель:
+* Чтобы обучить модель(данные поступают в формате словаря из фичей и таргета в последнем столбце):
 ```
  curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Linear models", "model_name":"logreg", "data":{"feature_1":[1.2, 0, 4], "feature_2":[3.4, 1, 4.7], "target": [0, 1, 0]}}' http://localhost:8080/train
  curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Tree models", "model_name":"catboost", "data":{"feature_1":[1.2, 0, 4], "feature_2":[3.4, 1, 4.7], "target": [0, 1, 0]}}' http://localhost:8080/train
 ```
-* Чтобы сделать предсказание:
+* Чтобы сделать предсказание(данные поступают в формате словаря из фичей):
 ```
 curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Linear models", "model_name":"logreg", "data":{"feature_1":[1.2, 0, 4], "feature_2":[3.4, 1, 4.7]}}' http://localhost:8080/predict  
 curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Tree models", "model_name":"catboost", "data":{"feature_1":[1.2, 0, 4], "feature_2":[3.4, 1, 4.7]}}' http://localhost:8080/predict
