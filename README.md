@@ -13,4 +13,14 @@
 В файле requirements.txt зафиксированы зависимости
 
 # Как запустить
-Для запуска API достатосно запустить main.py
+Для запуска API достатосно запустить main.py и перейти по адресу http://0.0.0.0:8080
+
+* Чтобы посмотреть список доступных моделей:
+```
+curl -X GET http://0.0.0.0:8080/models
+```
+* Чтобы добавить модель:
+```
+curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Linear models", "model_name":"logreg" ,"hyperparameters":{}}' http://0.0.0.0:8080/add_model    
+curl -X POST -H "Content-Type: application/json" -d '{"model_class":"Tree models", "model_name":"catboost" ,"hyperparameters":{}}' http://0.0.0.0:8080/add_model       
+```
