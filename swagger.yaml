@@ -1,0 +1,317 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/models": {
+      "get": {
+        "summary": "Return Models",
+        "description": "Возвращает список доступных моделей\n\nВозвращает:\n- dict: Список имен доступных моделей",
+        "operationId": "return_models_models_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/add_model": {
+      "post": {
+        "summary": "Add",
+        "description": "Добавляет новую модель с указанным классом, названием модели и\nгиперпараметрами\n\nАргументы:\n- request (AddModel): Объект запроса, содержащий информацию о модели,\nкоторую нужно добавить\n\nВозвращает:\n- dict: Словарь с сообщением о добавлении модели\n\nИсключения:\n- HTTPException: Возникает, если указано неправильное семейство классов\nмоделей",
+        "operationId": "add_add_model_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete_model": {
+      "post": {
+        "summary": "Delete",
+        "description": "Удаляет модель с указанным классом, названием модели\n\nАргументы:\n- request (DeleteModel): Объект запроса, содержащий информацию о модели,\nкоторую нужно удалить\n\nВозвращает:\n- dict: Словарь с сообщением об удалении модели\n\nИсключения:\n- HTTPException: Возникает, если указанная модель не была добавлена",
+        "operationId": "delete_delete_model_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/train": {
+      "post": {
+        "summary": "Train Model",
+        "description": "Обучает модель с указанным классом, названием модели на поданных данных\n\nАргументы:\n- request (Training): Объект запроса, содержащий информацию о модели,\nкоторую нужно обучить, и данных для обучения\n\nВозвращает:\n- dict: Словарь с сообщением об успешном обучении модели\n\nИсключения:\n- HTTPException: Возникает, если недостаточно данных или указанная модель\nне была добавлена или в данных есть менее двух классов",
+        "operationId": "train_model_train_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Training"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "summary": "Predict Model",
+        "description": "Выполняет предсказание с использованием указанной модели на данных\nподанных в модель\n\nАргументы:\n- request (Prediction): Объект запроса, содержащий информацию о модели,\nдля которой нужно выполнить предсказание, и данных для предсказания\n\nВозвращает:\n- dict: Словарь с предсказанием модели в виде строки\n\nИсключения:\n- HTTPException: Возникает, если модель не была обучена, указанная модель\nне была добавлена",
+        "operationId": "predict_model_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Prediction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddModel": {
+        "properties": {
+          "model_class": {
+            "type": "string",
+            "title": "Model Class"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "hyperparameters": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hyperparameters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_class",
+          "model_name"
+        ],
+        "title": "AddModel"
+      },
+      "DeleteModel": {
+        "properties": {
+          "model_class": {
+            "type": "string",
+            "title": "Model Class"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_class",
+          "model_name"
+        ],
+        "title": "DeleteModel"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Prediction": {
+        "properties": {
+          "model_class": {
+            "type": "string",
+            "title": "Model Class"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "data": {
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_class",
+          "model_name",
+          "data"
+        ],
+        "title": "Prediction"
+      },
+      "Training": {
+        "properties": {
+          "model_class": {
+            "type": "string",
+            "title": "Model Class"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "data": {
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_class",
+          "model_name",
+          "data"
+        ],
+        "title": "Training"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
