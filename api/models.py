@@ -79,8 +79,8 @@ class Models:
 
         df = pd.DataFrame(data)
         if train:
-            X_train, y_train = df.iloc[:, :-1], df.iloc[:, -1]
-            return X_train, y_train
+            data_train, target_train = df.iloc[:, :-1], df.iloc[:, -1]
+            return data_train, target_train
         return df
 
     def train(
@@ -101,10 +101,10 @@ class Models:
 
         """
 
-        X_train, y_train = self.prepare_data(data)
+        data_train, target_train = self.prepare_data(data)
         print(self.models)
         clf = self.models[model_class]["models"][model_name]
-        clf["model"].fit(X_train, y_train)
+        clf["model"].fit(data_train, target_train)
         clf["is_trained"] = True
 
     def predict(
@@ -130,9 +130,9 @@ class Models:
 
         """
 
-        X_test = self.prepare_data(data, train=False)
+        data_test = self.prepare_data(data, train=False)
         clf = self.models[model_class]["models"][model_name]
-        pred = list(clf["model"].predict(X_test))
+        pred = list(clf["model"].predict(data_test))
         return pred
 
     def get_available_models(self):

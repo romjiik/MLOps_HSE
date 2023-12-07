@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from models import Models
 import uvicorn
-from server.requests import (
+from requests import (
     AddModelRequest,
     DeleteModelRequest,
     TrainModelRequest,
