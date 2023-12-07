@@ -1,35 +1,15 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from models import Models
 import uvicorn
-from typing import Union
-
+from server.requests import (
+    AddModelRequest,
+    DeleteModelRequest,
+    TrainModelRequest,
+    PredictionModelRequest,
+)
 
 model = Models()
 app = FastAPI()
-
-
-class AddModel(BaseModel):
-    model_class: str
-    model_name: str
-    hyperparameters: Union[dict, None] = None
-
-
-class DeleteModel(BaseModel):
-    model_class: str
-    model_name: str
-
-
-class Training(BaseModel):
-    model_class: str
-    model_name: str
-    data: dict
-
-
-class Prediction(BaseModel):
-    model_class: str
-    model_name: str
-    data: dict
 
 
 @app.get("/models")
@@ -46,7 +26,7 @@ def return_models():
 
 
 @app.post("/add_model")
-def add(request: AddModel):
+def add(request: AddModelRequest):
     """
     Добавляет новую модель с указанным классом, названием модели и
     гиперпараметрами
@@ -73,14 +53,14 @@ def add(request: AddModel):
     except KeyError:
         raise HTTPException(
             status_code=404,
-            detail="Такого семейства классов моделей не существует.Выберите один из Linear models, Tree models"
+            detail="Такого семейства классов моделей не существует.Выберите один из Linear models, Tree models",
         )
 
     return {"Message": "Модель добавлена"}
 
 
 @app.post("/delete_model")
-def delete(request: DeleteModel):
+def delete(request: DeleteModelRequest):
     """
     Удаляет модель с указанным классом, названием модели
 
@@ -103,14 +83,13 @@ def delete(request: DeleteModel):
         model.delete_model(model_class, model_name)
     except KeyError:
         raise HTTPException(
-            status_code=404,
-            detail="Модель с таким названием не была добавлена"
+            status_code=404, detail="Модель с таким названием не была добавлена"
         )
     return {"Message": "Модель удалена"}
 
 
 @app.post("/train")
-def train_model(request: Training):
+def train_model(request: TrainModelRequest):
     """
     Обучает модель с указанным классом, названием модели на поданных данных
 
@@ -132,28 +111,21 @@ def train_model(request: Training):
     data = request.data
 
     if len(list(data.values())[0]) < 2:
-        raise HTTPException(
-            status_code=404,
-            detail="Недостаточно данных"
-        )
+        raise HTTPException(status_code=400, detail="Недостаточно данных")
 
     try:
         model.train(model_class, model_name, data)
     except KeyError:
         raise HTTPException(
-            status_code=404,
-            detail="Модель с таким названием не была добавлена"
+            status_code=404, detail="Модель с таким названием не была добавлена"
         )
     except ValueError:
-        raise HTTPException(
-            status_code=404,
-            detail="В данных нужно хотя бы два класса"
-        )
+        raise HTTPException(status_code=404, detail="В данных нужно хотя бы два класса")
     return {"Message": "Модель успешно обучена"}
 
 
 @app.post("/predict")
-def predict_model(request: Prediction):
+def predict_model(request: PredictionModelRequest):
     """
     Выполняет предсказание с использованием указанной модели на данных
     поданных в модель
@@ -175,17 +147,13 @@ def predict_model(request: Prediction):
     model_name = request.model_name
     data = request.data
 
-    if not model.models[model_class]['models'][model_name]['is_trained']:
-        raise HTTPException(
-            status_code=404,
-            detail="Модель не обучена. Обучите модель"
-        )
+    if not model.models[model_class]["models"][model_name]["is_trained"]:
+        raise HTTPException(status_code=404, detail="Модель не обучена. Обучите модель")
     try:
         prediction = model.predict(model_class, model_name, data)
     except KeyError:
         raise HTTPException(
-            status_code=404,
-            detail="Модель с таким названием не была добавлена"
+            status_code=404, detail="Модель с таким названием не была добавлена"
         )
     return {"Prediction": str(prediction)}
 
