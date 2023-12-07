@@ -1,16 +1,5 @@
-# # Source the .env file to export environment variables
-# if [ -f ".env" ]; then
-#     echo "Exporting env variables"
-#     export $(cat .env | xargs)
-# fi
-
-
-# mc alias remove s3storage
-# echo 'Alias minio'
-# mc alias set s3storage ${MINIO_ENDPOINT} ${MINIO_ACCESS_KEY_ID} ${MINIO_SECRET_KEY}
-# echo 'Create bucket'
-# mc mb s3storage/${MINIO_BUCKET_NAME}
-
+echo 'Start Minio server'
+minio server minio/
 echo 'Alias minio'
 mc alias set s3storage http://127.0.0.1:9000 obai9Szm6zF7XpWr6UTQ vNZBQjoCigmI6QDhMIG2BQhm6Vgx4WFGqQkhAdZ4
 echo 'Create bucket'
