@@ -1,0 +1,7 @@
+[core]
+    remote = s3storage
+['remote "s3storage"']
+    url = s3://models
+    endpointurl = http://127.0.0.1:9000
+    access_key_id = obai9Szm6zF7XpWr6UTQ
+    secret_access_key = vNZBQjoCigmI6QDhMIG2BQhm6Vgx4WFGqQkhAdZ4
