@@ -108,7 +108,7 @@ class Models:
         clf = self.models[model_class]["models"][model_name]
         clf["model"].fit(data_train, target_train)
         clf["is_trained"] = True
-
+        # добавить сохранение моделей
         push_file_to_dvc(data, data_name)
 
     def predict(

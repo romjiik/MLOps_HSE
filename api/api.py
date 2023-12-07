@@ -115,7 +115,7 @@ def train_model(request: TrainModelRequest):
         raise HTTPException(status_code=400, detail="Недостаточно данных")
 
     try:
-        model.train(model_class, model_name, data)
+        model.train(model_class, model_name, data, data_name)
     except KeyError:
         raise HTTPException(
             status_code=404, detail="Модель с таким названием не была добавлена"
@@ -152,7 +152,7 @@ def predict_model(request: PredictionModelRequest):
     if not model.models[model_class]["models"][model_name]["is_trained"]:
         raise HTTPException(status_code=404, detail="Модель не обучена. Обучите модель")
     try:
-        prediction = model.predict(model_class, model_name, data)
+        prediction = model.predict(model_class, model_name, data, data_name)
     except KeyError:
         raise HTTPException(
             status_code=404, detail="Модель с таким названием не была добавлена"
