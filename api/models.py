@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from catboost import CatBoostClassifier
 from typing import Literal
+from utils import push_file_to_dvc
 
 
 class Models:
@@ -88,6 +89,7 @@ class Models:
         model_class: Literal["Linear models", "Tree models"],
         model_name: str,
         data: dict,
+        data_name: str
     ):
         """
         Обучает указанную модель на предоставленных данных
@@ -102,16 +104,19 @@ class Models:
         """
 
         data_train, target_train = self.prepare_data(data)
-        print(self.models)
+        # print(self.models)
         clf = self.models[model_class]["models"][model_name]
         clf["model"].fit(data_train, target_train)
         clf["is_trained"] = True
+
+        push_file_to_dvc(data, data_name)
 
     def predict(
         self,
         model_class: Literal["Linear models", "Tree models"],
         model_name: str,
         data: dict,
+        data_name: str
     ):
         """
         Выполняет предсказание с использованием указанной модели на
@@ -133,6 +138,7 @@ class Models:
         data_test = self.prepare_data(data, train=False)
         clf = self.models[model_class]["models"][model_name]
         pred = list(clf["model"].predict(data_test))
+        push_file_to_dvc(data, data_name)
         return pred
 
     def get_available_models(self):

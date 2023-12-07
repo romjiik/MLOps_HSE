@@ -109,6 +109,7 @@ def train_model(request: TrainModelRequest):
     model_class = request.model_class
     model_name = request.model_name
     data = request.data
+    data_name = request.data_name
 
     if len(list(data.values())[0]) < 2:
         raise HTTPException(status_code=400, detail="Недостаточно данных")
@@ -146,6 +147,7 @@ def predict_model(request: PredictionModelRequest):
     model_class = request.model_class
     model_name = request.model_name
     data = request.data
+    data_name = request.data_name
 
     if not model.models[model_class]["models"][model_name]["is_trained"]:
         raise HTTPException(status_code=404, detail="Модель не обучена. Обучите модель")

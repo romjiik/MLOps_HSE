@@ -17,9 +17,11 @@ class TrainModelRequest(BaseModel):
     model_class: str
     model_name: str
     data: dict
+    data_name: str
 
 
 class PredictionModelRequest(BaseModel):
     model_class: str
     model_name: str
     data: dict
+    data_name: str
