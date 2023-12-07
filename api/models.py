@@ -3,11 +3,26 @@ from sklearn.linear_model import LogisticRegression
 from catboost import CatBoostClassifier
 from typing import Literal
 from utils import push_file_to_dvc
+import pickle
+import boto3
+
+s3_client = boto3.client('s3',
+                        endpoint_url='http://127.0.0.1:9000',
+                        aws_access_key_id='obai9Szm6zF7XpWr6UTQ',
+                        aws_secret_access_key='vNZBQjoCigmI6QDhMIG2BQhm6Vgx4WFGqQkhAdZ4')
+
+key = "models.pkl"
+bucket = "models"
 
 
 class Models:
     def __init__(self):
-        self.models = {
+        try:
+            response = s3_client.get_object(Bucket=bucket, Key=key)
+            pickle_data = response['Body'].read()
+            self.models = pickle.loads(pickle_data)
+        except:
+            self.models = {
             "Linear models": {"models": {}},
             "Tree models": {"models": {}}
         }
@@ -44,6 +59,9 @@ class Models:
                     "is_trained": False,
                 }
             }
+        # save model config
+        pickle_data = pickle.dumps(self.models)
+        s3_client.put_object(Body=pickle_data, Bucket=bucket, Key=key)
 
     def delete_model(self, model_class: str, model_name: str):
         """
@@ -57,6 +75,9 @@ class Models:
         """
 
         del self.models[model_class]["models"][model_name]
+        # save model config
+        pickle_data = pickle.dumps(self.models)
+        s3_client.put_object(Body=pickle_data, Bucket=bucket, Key=key)
 
     def prepare_data(self, data: dict, train: bool = True):
         """
@@ -104,11 +125,13 @@ class Models:
         """
 
         data_train, target_train = self.prepare_data(data)
-        # print(self.models)
         clf = self.models[model_class]["models"][model_name]
         clf["model"].fit(data_train, target_train)
         clf["is_trained"] = True
-        # добавить сохранение моделей
+        # save model config
+        pickle_data = pickle.dumps(self.models)
+        s3_client.put_object(Body=pickle_data, Bucket=bucket, Key=key) 
+        # save data
         push_file_to_dvc(data, data_name)
 
     def predict(
